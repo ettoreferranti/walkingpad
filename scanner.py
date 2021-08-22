@@ -7,8 +7,9 @@ import asyncio
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-async def run():
-    devices = await BleakScanner.discover()
+@asyncio.coroutine
+def run():
+    devices = yield from BleakScanner.discover()
     for d in devices:
         print(d)
 
@@ -17,12 +18,14 @@ async def run():
     # )
     # print(device)
 
-async def print_services(ble_address: str):
-    device = await BleakScanner.find_device_by_address(ble_address, timeout=20.0)
+@asyncio.coroutine
+def print_services(ble_address: str):
+    device = yield from BleakScanner.find_device_by_address(ble_address, timeout=20.0)
     if not device:
         raise BleakError(f"A device with address {ble_address} could not be found.")
-    async with BleakClient(device) as client:
-        svcs = await client.get_services()
+    #@asyncio.coroutine
+    with BleakClient(device) as client:
+        svcs = yield from client.get_services()
         print("Services:")
         for service in svcs:
             print(service)
