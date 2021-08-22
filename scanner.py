@@ -33,7 +33,7 @@ def main():
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())
-    loop.run_until_complete(print_services("57:4C:4D:1E:21:AD"))
+    loop.run_until_complete(print_services("FE:82:C9:60:07:BE"))
 
     
 
