@@ -22,7 +22,7 @@ def run():
 def print_services(ble_address: str):
     device = yield from BleakScanner.find_device_by_address(ble_address, timeout=20.0)
     if not device:
-        raise BleakError(f"A device with address {ble_address} could not be found.")
+        raise BleakError("A device with address {0} could not be found.".format(ble_address))
     #@asyncio.coroutine
     with BleakClient(device) as client:
         svcs = yield from client.get_services()
