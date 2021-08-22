@@ -33,7 +33,7 @@ def main():
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())
-    #loop.run_until_complete(print_services("C536F86F-95EB-43FE-B7E1-E72A4FD8F802"))
+    loop.run_until_complete(print_services("57:4C:4D:1E:21:AD: R1 Pro"))
 
     
 
