@@ -25,6 +25,23 @@ class WalkingPad:
         self.controller = Controller()
         self.controller.handler_last_status = self.on_new_status
 
+    @staticmethod
+    async def get_pad_by_name(name="r1 pro"):
+        device = await BleakScanner.find_device_by_filter(
+         lambda d, ad: d.name and d.name.lower() == name
+        )
+        if device is not None:
+            logger.info(f"{device} found!")
+        else:
+            logger.info("R1 Pro not found, quitting...")
+            quit()
+
+        WalkingPad.get_pad_by_address(device.address)
+
+    @staticmethod
+    async def get_pad_by_address(address):
+        return WalkingPad(address)
+
     async def connect(self):
         print(f"Connecting to {self.address}")
         await self.controller.run(self.address)
@@ -41,7 +58,6 @@ class WalkingPad:
         return self.latest_status
 
     def on_new_status(self, status):
-
         distance_in_km = status.dist / 100.0
 
         logger.info("Received Record:")

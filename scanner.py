@@ -4,7 +4,7 @@ from bleak import BleakScanner, BleakClient, BleakError
 from ph4_walkingpad.pad import Controller
 import logging
 import asyncio
-import pad
+from pad import WalkingPad
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ async def run():
         logger.info("R1 Pro not found, quitting...")
         quit()
 
-    pad = WalkingPad(device.address)
+    walkingPad = WalkingPad(device.address)
 
 def main():
 
