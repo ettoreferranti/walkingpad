@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import logging
-import flask
-from flask import jsonify
+from quart import Quart
+from quart import jsonify
 from pad import WalkingPad
 import asyncio
 
@@ -10,7 +10,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-app = flask.Flask(__name__)
+app = Quart(__name__)
 app.config["DEBUG"] = True
 
 name = "r1 pro"
@@ -30,8 +30,8 @@ async def get_walking_pad():
         if address is None:
             logger.warning(f"Device {name} not found")
             walkingPad = None
-        else:
-            walkingPad = WalkingPad(address)
+    if walkingPad is None:
+        walkingPad = WalkingPad(address)
 
 @app.route('/', methods=['GET'])
 def home():
@@ -72,6 +72,7 @@ async def disconnect():
     if walkingPad is not None:
         try:
             await walkingPad.disconnect()
+            walkingPad = None
             return jsonify({
                 "action": "Disconnect",
                 "result": "Success"
@@ -84,6 +85,7 @@ async def disconnect():
                 "reason" : "Exception"
             })
     else:
+        logger.warning("WalkingPad already disconnected")
         return jsonify({
             "action": "Disconnect",
             "result": "Failure",
@@ -165,7 +167,6 @@ async def stop_walking():
             "reason" : "Disconnected"
         })
 
-
 @app.route('/api/v1/resources/walkingpad/speed', methods=['POST'])
 async def set_speed(speed):
     logger.info(f"Setting speed to {speed}")
@@ -173,7 +174,6 @@ async def set_speed(speed):
 def main():
     app.run(host='0.0.0.0', port=8000)
     
-   
 if __name__ == "__main__":
     # execute only if run as a script
     main()
