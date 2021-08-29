@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from bleak import BleakScanner, BleakClient, BleakError
+from bleak import BleakScanner, BleakClient, BleakError, discover
 from ph4_walkingpad.pad import Controller, WalkingPad
 import logging
 import asyncio
@@ -8,6 +8,7 @@ import asyncio
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
 
 class WalkingPad:
 
@@ -26,6 +27,7 @@ class WalkingPad:
         self.controller.handler_last_status = self.on_new_latest_status
         self.controller.handler_cur_status = self.on_new_cur_status
 
+
     @staticmethod
     async def get_address_by_name(name="r1 pro"):
         logger.info(f"Getting the pad address by name ({name})")
@@ -39,6 +41,33 @@ class WalkingPad:
             quit()
 
         return device.address
+
+    @staticmethod
+    async def scan(name="r1 pro"):
+        devices_dict = {}
+        devices_list = []
+        walking_belt_candidates = []
+
+        logger.info("Scanning for peripherals...")
+        dev = await discover()
+        for i in range(len(dev)):
+            # Print the devices discovered
+            info_str = ', '.join(["[%2d]" % i, str(dev[i].address), str(dev[i].name), str(dev[i].metadata["uuids"])])
+            logger.info("Device: %s" % info_str)
+
+            # Put devices information into list
+            devices_dict[dev[i].address] = []
+            devices_dict[dev[i].address].append(dev[i].name)
+            devices_dict[dev[i].address].append(dev[i].metadata["uuids"])
+            devices_list.append(dev[i].address)
+
+            if name in dev[i].name.lower():
+                walking_belt_candidates.append(dev[i])
+
+        if len(walking_belt_candidates) >0 :
+            return walking_belt_candidates[0]
+        else:
+            return None
 
     async def connect(self):
         logger.info(f"Connecting to {self.address}")
@@ -58,6 +87,16 @@ class WalkingPad:
     async def read_stats(self):
         logger.info(f"Reading status from {self.address}")
         await self.controller.ask_stats()
+        await asyncio.sleep(1.0)
+
+    async def start_walking(self):
+        logger.info("Starting to walk")
+        await self.controller.start_belt()
+        await asyncio.sleep(1.0)
+
+    async def stop_walking(self):
+        logger.info("Starting to walk")
+        await self.controller.stop_belt()
         await asyncio.sleep(1.0)
 
     def get_status(self):
