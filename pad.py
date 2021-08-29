@@ -14,6 +14,7 @@ class WalkingPad:
 
     address = None
     controller = None
+    minimal_cmd_space = 0.69
 
     latest_status = {
         "steps": None,
@@ -37,8 +38,8 @@ class WalkingPad:
         if device is not None:
             logger.info(f"{device} found!")
         else:
-            logger.error("R1 Pro not found, quitting...")
-            quit()
+            logger.error("R1 Pro not found")
+            
 
         return device.address
 
@@ -72,32 +73,32 @@ class WalkingPad:
     async def connect(self):
         logger.info(f"Connecting to {self.address}")
         await self.controller.run(self.address)
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(self.minimal_cmd_space)
 
     async def disconnect(self):
         logger.info(f"Disconnecting from {self.address}")
         await self.controller.disconnect()
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(self.minimal_cmd_space)
 
     async def read_history(self):
         logger.info(f"Reading history from {self.address}")
         await self.controller.ask_hist(0)
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(self.minimal_cmd_space)
 
     async def read_stats(self):
         logger.info(f"Reading status from {self.address}")
         await self.controller.ask_stats()
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(self.minimal_cmd_space)
 
     async def start_walking(self):
         logger.info("Starting to walk")
         await self.controller.start_belt()
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(self.minimal_cmd_space)
 
     async def stop_walking(self):
         logger.info("Starting to walk")
         await self.controller.stop_belt()
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(self.minimal_cmd_space)
 
     def get_status(self):
         return self.latest_status
