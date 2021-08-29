@@ -2,6 +2,7 @@
 
 import logging
 from quart import Quart
+from quart_cors import cors
 from quart import jsonify
 from pad import WalkingPad
 import asyncio
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 app = Quart(__name__)
+app = cors(app, allow_origin="*")
 app.config["DEBUG"] = True
 
 name = "r1 pro"
