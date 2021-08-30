@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Clock from './App';
+import PadGUI from './PadGUI';
 import './index.css';
 
 ReactDOM.render(
-  <Clock />,
+  <PadGUI />,
   document.getElementById('root')
 );
