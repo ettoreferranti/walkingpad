@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PadGUI from './PadGUI';
+import Pad from './Pad';
 import './index.css';
 
 ReactDOM.render(
-  <PadGUI />,
+  <Pad />,
   document.getElementById('root')
 );
