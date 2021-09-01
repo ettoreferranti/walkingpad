@@ -1,19 +1,21 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 class Pad extends React.Component {
   
   constructor(props) {
     super(props);
     this.state = { 
-      status : { steps: 0,
-        distance: 0,
-        time: 0
-      },
-      connected : false,
-      running : false,
-      simulation : true
-    };
+        status : { steps: 0,
+          distance: 0,
+          time: 0
+        },
+        connected : false,
+        running : false,
+        simulation : true,
+        cumulative : []
+      };
 
     this.connect = this.connect.bind(this);
     this.disconnect = this.disconnect.bind(this);
@@ -91,6 +93,12 @@ class Pad extends React.Component {
     }
     console.log('Status: ' + JSON.stringify(data, null, 2));
     this.setState({status: data});
+    let additional = this.state.cumulative;
+    additional.push(data)
+    console.log('Additional: ' + JSON.stringify(additional, null, 2));
+    this.setState({status: data});
+    this.setState({cumulative: additional})
+    //this.state.cumulative.push(data);
   }
 
   async start () {
@@ -162,9 +170,32 @@ class Pad extends React.Component {
           </Button>
         </h2>
         <h1>Current Status:</h1>
-        <h2> Steps: {this.state.status.steps}</h2>
+        <h2> Cadence: {this.state.status.steps} steps</h2>
         <h2> Distance: {this.state.status.distance} km</h2>
         <h2> Time: {this.state.status.time} s</h2>
+        <h2>
+        <ResponsiveContainer width="100%" height="500">
+          <LineChart
+            width={1000}
+            height={500}
+            data={this.state.cumulative}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="steps" stroke="#8884d8" isAnimationActive={false}/>
+            <Line type="monotone" dataKey="distance" stroke="#82ca9d" isAnimationActive={false}/>
+          </LineChart>
+          </ResponsiveContainer>
+        </h2>
       </div>
     );
   }
