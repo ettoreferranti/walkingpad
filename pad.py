@@ -16,18 +16,9 @@ class Treadmill:
     controller = None
     minimal_cmd_space = 0.69
 
-    # latest_status = {
-    #     "steps": None,
-    #     "distance": None,
-    #     "time": None,
-    #     "speed" : None
-    # }
-
     def __init__(self, address):
         self.address = address
         self.controller = Controller()
-        #self.controller.handler_last_status = self.on_new_latest_status
-        #self.controller.handler_cur_status = self.on_new_cur_status
 
     @staticmethod
     async def get_address_by_name(name="r1 pro"):
@@ -106,19 +97,19 @@ class Treadmill:
             belt_state = "idle"
         elif (belt_state == 1):
             belt_state = "running"
-        elif (belt_state >=7):
+        elif (belt_state >=6):
             belt_state = "starting"
 
-        logger.info(f"Latest status received: {stats}")
+        #logger.info(f"Latest status received: {stats}")
         distance_in_km = stats.dist / 100.0
         speed_in_km = stats.speed / 10.0
 
-        logger.info("Received Record:")
-        logger.info(f"Distance: {distance_in_km}km")
-        logger.info(f"Time: {stats.time} seconds")
-        logger.info(f"Steps: {stats.steps}")
-        logger.info(f"Speed: {speed_in_km} km/h")
-        logger.info(f"Belt State: {belt_state}")
+        #logger.info("Received Record:")
+        #logger.info(f"Distance: {distance_in_km}km")
+        #logger.info(f"Time: {stats.time} seconds")
+        #logger.info(f"Steps: {stats.steps}")
+        #logger.info(f"Speed: {speed_in_km} km/h")
+        #logger.info(f"Belt State: {belt_state}")
 
         latest_status = {}
 
@@ -126,7 +117,7 @@ class Treadmill:
         latest_status['distance'] = distance_in_km
         latest_status['time'] = stats.time
         latest_status['speed'] = speed_in_km
-        latest_status['state'] = belt_state
+        latest_status['mode'] = belt_state
 
         return latest_status
 
@@ -142,40 +133,5 @@ class Treadmill:
 
     async def set_speed(self,speed):
         logger.info(f"Setting speed to {speed}")
-        await self.controller.change_speed(speed)
+        await self.controller.change_speed(speed*10)
         await asyncio.sleep(self.minimal_cmd_space)
-
-    # def get_status(self):
-    #     return self.latest_status
-
-    # def on_new_latest_status(self, sender, status):
-    #     logger.info(f"Latest status received: {status}")
-    #     distance_in_km = status.dist / 100.0
-    #     speed_in_km = status.speed / 10.0
-
-    #     logger.info("Received Record:")
-    #     logger.info(f"Distance: {distance_in_km}km")
-    #     logger.info(f"Time: {status.time} seconds")
-    #     logger.info(f"Steps: {status.steps}")
-    #     logger.info(f"Speed: {speed_in_km} km/h")
-
-    #     self.latest_status['steps'] = status.steps
-    #     self.latest_status['distance'] = distance_in_km
-    #     self.latest_status['time'] = status.time
-    #     self.latest_status['speed'] = speed_in_km
-
-    # def on_new_cur_status(self, sender, status):
-    #     logger.info(f"Current status received: {status}")
-    #     distance_in_km = status.dist / 100.0
-    #     speed_in_km = status.speed / 10.0
-
-    #     logger.info("Received Record:")
-    #     logger.info(f"Distance: {distance_in_km}km")
-    #     logger.info(f"Time: {status.time} seconds")
-    #     logger.info(f"Steps: {status.steps}")
-    #     logger.info(f"Speed: {speed_in_km} km/h")
-
-    #     self.latest_status['steps'] = status.steps
-    #     self.latest_status['distance'] = distance_in_km
-    #     self.latest_status['time'] = status.time
-    #     self.latest_status['speed'] = speed_in_km

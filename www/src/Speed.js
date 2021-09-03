@@ -39,9 +39,9 @@ class Speed extends React.Component {
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: { 'speed': speed}
+          body: JSON.stringify({'speed': speed})
         };
-        const response = await fetch('http://192.168.1.131:8000/api/v1/resources/walkingpad/speed', requestOptions);
+        const response = await fetch('http://'+this.props.ip+':8000/api/v1/resources/walkingpad/speed', requestOptions);
         data = await response.json();
       }
       console.log('Speed set: ' + JSON.stringify(data, null, 2));

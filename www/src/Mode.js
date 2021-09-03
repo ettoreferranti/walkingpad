@@ -30,7 +30,7 @@ class Mode extends React.Component {
         headers: { 'Content-Type': 'application/json' },
         body: {}
       };
-      const response = await fetch('http://192.168.1.131:8000/api/v1/resources/walkingpad/start', requestOptions);
+      const response = await fetch('http://'+this.props.ip+':8000/api/v1/resources/walkingpad/start', requestOptions);
       data = await response.json();
     }
     console.log('Started: ' + JSON.stringify(data, null, 2));
@@ -51,7 +51,7 @@ class Mode extends React.Component {
         headers: { 'Content-Type': 'application/json' },
         body: {}
       };
-      const response = await fetch('http://192.168.1.131:8000/api/v1/resources/walkingpad/stop', requestOptions);
+      const response = await fetch('http://'+this.props.ip+':8000/api/v1/resources/walkingpad/stop', requestOptions);
       data = await response.json();
     }
     console.log('Stopped: ' + JSON.stringify(data, null, 2));

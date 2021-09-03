@@ -6,7 +6,7 @@ from quart import request
 from quart_cors import cors
 from quart import jsonify
 from pad import Treadmill
-import asyncio
+
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -14,6 +14,7 @@ logger.setLevel(logging.INFO)
 
 app = Quart(__name__)
 app = cors(app, allow_origin="*")
+#app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["DEBUG"] = True
 
 name = "r1 pro"
@@ -176,14 +177,14 @@ async def stop_walking():
             "reason": "Disconnected"
         })
 
-
 @app.route('/api/v1/resources/walkingpad/speed', methods=['POST'])
 async def set_speed():
+    global walkingPad
+
     await request.get_data()
     speed = request.json['speed']
+    #speed = 4
     logger.info(f"Setting speed to {speed}")
-
-    global walkingPad
 
     if walkingPad is not None:
         try:
