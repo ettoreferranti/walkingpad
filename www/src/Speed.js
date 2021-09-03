@@ -2,6 +2,12 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 
 class Speed extends React.Component {
+  constructor(props) {
+    super(props);
+    this.set_speed = this.set_speed.bind(this);
+    this.increase_speed = this.increase_speed.bind(this);
+    this.decrease_speed = this.decrease_speed.bind(this);
+  }
 
     async componentDidMount() {
     }
@@ -20,6 +26,7 @@ class Speed extends React.Component {
     }
   
     async set_speed(speed) {
+      console.log("Setting speed to " + speed);
       let data = {};
       if (this.props.simulation) {
         console.log("SIMULATION");

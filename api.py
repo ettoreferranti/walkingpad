@@ -5,12 +5,12 @@ from quart import Quart
 from quart import request
 from quart_cors import cors
 from quart import jsonify
-from pad import WalkingPad
+from pad import Treadmill
 import asyncio
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARN)
+logger.setLevel(logging.INFO)
 
 app = Quart(__name__)
 app = cors(app, allow_origin="*")
@@ -30,12 +30,12 @@ async def get_walking_pad():
     if address is None:
         logger.info(f"Getting the walking pad address ({name})")
         # address = await WalkingPad.get_address_by_name(name)
-        address = await WalkingPad.scan(name)
+        address = await Treadmill.scan(name)
         if address is None:
             logger.warning(f"Device {name} not found")
             walkingPad = None
     if walkingPad is None:
-        walkingPad = WalkingPad(address)
+        walkingPad = Treadmill(address)
 
 
 @app.route('/', methods=['GET'])
@@ -179,8 +179,34 @@ async def stop_walking():
 
 @app.route('/api/v1/resources/walkingpad/speed', methods=['POST'])
 async def set_speed():
+    await request.get_data()
     speed = request.json['speed']
     logger.info(f"Setting speed to {speed}")
+
+    global walkingPad
+
+    if walkingPad is not None:
+        try:
+            await walkingPad.set_speed(speed)
+            return jsonify({
+                "action": "Set Speed",
+                "result": "Success",
+                "value" : speed,
+            })
+        except:
+            logger.exception("Stop walking error")
+        return jsonify({
+            "action": "Set Speed",
+            "result": "Failure",
+            "reason": "Exception"
+        })
+    else:
+        logger.warning("WalkingPad disconnected")
+        return jsonify({
+            "action": "Set Speed",
+            "result": "Failure",
+            "reason": "Disconnected"
+        })
 
 
 def main():

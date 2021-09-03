@@ -7,10 +7,10 @@ import asyncio
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARN)
+logger.setLevel(logging.INFO)
 
 
-class WalkingPad:
+class Treadmill:
 
     address = None
     controller = None

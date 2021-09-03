@@ -15,25 +15,30 @@ class Pad extends React.Component {
       status: {
         steps: 0,
         distance: 0,
-        time: 0
+        time: 0,
+        speed: 0
       },
       connected: false,
       running: false,
-      simulation: true,
-      cumulative : [
-        { steps: 0,
+      simulation: false,
+      cumulative: [
+        {
+          steps: 0,
           distance: 0.1,
           time: 0
         },
-        { steps: 2,
+        {
+          steps: 2,
           distance: 0.2,
           time: 1
         },
-        { steps: 4,
+        {
+          steps: 4,
           distance: 0.3,
           time: 2
         },
-        { steps: 6,
+        {
+          steps: 6,
           distance: 0.4,
           time: 3
         }
@@ -43,8 +48,7 @@ class Pad extends React.Component {
     this.connect = this.connect.bind(this);
     this.disconnect = this.disconnect.bind(this);
     this.get_status = this.get_status.bind(this);
-    this.start = this.start.bind(this);
-    this.stop = this.stop.bind(this);
+
   }
 
   async componentDidMount() {
@@ -76,7 +80,9 @@ class Pad extends React.Component {
       const response = await fetch('http://192.168.1.131:8000/api/v1/resources/walkingpad/connect', requestOptions);
       data = await response.json();
     }
-    this.setState({ connected: true });
+    if (data.result === "Success") {
+      this.setState({ connected: true });
+    }
     console.log('Connected: ' + JSON.stringify(data, null, 2));
   }
 
@@ -99,32 +105,34 @@ class Pad extends React.Component {
       data = await response.json();
     }
     this.setState({ connected: false });
-    console.log('Disconnected: ' + data)
+    console.log('Disconnected: ' + JSON.stringify(data, null, 2));
   }
 
   async get_status() {
-    let data = {};
-    if (this.state.simulation) {
-      console.log("SIMULATION");
-      data = {
-        steps: this.state.status.steps + 1,
-        distance: this.state.status.distance + 1,
-        time: this.state.status.time + 1
-      };
+    if (this.state.connected) {
+      let data = {};
+      if (this.state.simulation) {
+        console.log("SIMULATION");
+        data = {
+          steps: this.state.status.steps + 1,
+          distance: this.state.status.distance + 1,
+          time: this.state.status.time + 1
+        };
+      }
+      else {
+        const requestOptions = {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        };
+        const response = await fetch('http://192.168.1.131:8000/api/v1/resources/walkingpad/status', requestOptions);
+        data = await response.json();
+      }
+      //console.log('Status: ' + JSON.stringify(data, null, 2));
+      this.setState({ status: data });
+      //let additional = this.state.cumulative;
+      //additional.push(data);
+      //this.setState({cumulative: additional});
     }
-    else {
-      const requestOptions = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      };
-      const response = await fetch('http://192.168.1.131:8000/api/v1/resources/walkingpad/status', requestOptions);
-      data = await response.json();
-    }
-    //console.log('Status: ' + JSON.stringify(data, null, 2));
-    this.setState({ status: data });
-    //let additional = this.state.cumulative;
-    //additional.push(data);
-    //this.setState({cumulative: additional});
   }
 
   render() {
@@ -147,11 +155,11 @@ class Pad extends React.Component {
           </Button>
         </h2>
         <h1>Current Status:</h1>
-        <h2><Mode mode={this.state.mode} simulation={this.state.simulation}/></h2>
+        <h2><Mode mode={this.state.mode} simulation={this.state.simulation} /></h2>
         <h2><StepsField steps={this.state.status.steps} /></h2>
         <h2><DistanceField distance={this.state.status.distance} /></h2>
         <h2><TimeField time={this.state.status.time} /></h2>
-        <h2><Speed speed={this.state.speed} simulation={this.state.simulation}/></h2>
+        <h2><Speed speed={this.state.status.speed} simulation={this.state.simulation} /></h2>
         <h2><TimeSeries data={this.state.cumulative} /></h2>
       </div>
     );
