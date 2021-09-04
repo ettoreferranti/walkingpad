@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from bleak import BleakScanner, BleakClient, BleakError, discover
+from bleak import BleakScanner, discover
 from ph4_walkingpad.pad import Controller, WalkingPad
 import logging
 import asyncio
@@ -21,20 +21,7 @@ class Treadmill:
         self.controller = Controller()
 
     @staticmethod
-    async def get_address_by_name(name="r1 pro"):
-        logger.info(f"Getting the pad address by name ({name})")
-        device = await BleakScanner.find_device_by_filter(
-            lambda d, ad: d.name and d.name.lower() == name
-        )
-        if device is not None:
-            logger.info(f"{device} found!")
-        else:
-            logger.error("R1 Pro not found")
-
-        return device.address
-
-    @staticmethod
-    async def scan(name="r1 pro"):
+    async def scan(name):
         devices_dict = {}
         devices_list = []
         walking_belt_candidates = []
@@ -100,16 +87,8 @@ class Treadmill:
         elif (belt_state >=6):
             belt_state = "starting"
 
-        #logger.info(f"Latest status received: {stats}")
         distance_in_km = stats.dist / 100.0
         speed_in_km = stats.speed / 10.0
-
-        #logger.info("Received Record:")
-        #logger.info(f"Distance: {distance_in_km}km")
-        #logger.info(f"Time: {stats.time} seconds")
-        #logger.info(f"Steps: {stats.steps}")
-        #logger.info(f"Speed: {speed_in_km} km/h")
-        #logger.info(f"Belt State: {belt_state}")
 
         latest_status = {}
 
@@ -117,7 +96,8 @@ class Treadmill:
         latest_status['distance'] = distance_in_km
         latest_status['time'] = stats.time
         latest_status['speed'] = speed_in_km
-        latest_status['mode'] = belt_state
+        latest_status['mode'] = mode
+        latest_status['belt'] = belt_state
 
         return latest_status
 

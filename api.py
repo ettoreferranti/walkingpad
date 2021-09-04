@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from fake_pad import FakeTreadmill
 import logging
 from quart import Quart
 from quart import request
@@ -18,7 +19,7 @@ app = Quart(__name__)
 app = cors(app, allow_origin="*")
 app.config["DEBUG"] = True
 
-settings = {'name': 'r1 pro'}
+settings = {'name': 'r1 pro', 'simulation': False}
 
 address = None
 
@@ -28,14 +29,21 @@ async def get_walking_pad():
     global address
     global walkingPad
 
-    if address is None:
-        logger.info(f"Getting the walking pad address ({settings['name']})")
-        address = await Treadmill.scan(settings['name'])
+    if walkingPad is not None:
+        return
+
+    if settings['simulation']:
+        walkingPad = FakeTreadmill(await FakeTreadmill.scan(settings['name']))
+    else:
         if address is None:
-            logger.warning(f"Device {settings['name']} not found")
-            walkingPad = None
-    if walkingPad is None:
-        walkingPad = Treadmill(address)
+            logger.info(f"Getting the walking pad address ({settings['name']})")
+            address = await Treadmill.scan(settings['name'])
+            if address is None:
+                logger.warning(f"Device {settings['name']} not found")
+                walkingPad = None
+                address = None
+            else:
+                walkingPad = Treadmill(address)
 
 
 @app.route('/', methods=['GET'])

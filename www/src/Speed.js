@@ -9,59 +9,51 @@ class Speed extends React.Component {
     this.decrease_speed = this.decrease_speed.bind(this);
   }
 
-    async componentDidMount() {
-    }
-  
-    async componentWillUnmount() {
-    }
+  async componentDidMount() {
+  }
 
-    async increase_speed() {
-        this.set_speed(this.props.speed + 0.5)
-    }
+  async componentWillUnmount() {
+  }
 
-    async decrease_speed() {
-        if ( this.props.speed >= 0.5) 
-        { this.set_speed(this.props.speed - 0.5)
-        }
-    }
-  
-    async set_speed(speed) {
-      console.log("Setting speed to " + speed);
-      let data = {};
-      if (this.props.simulation) {
-        console.log("SIMULATION");
-        data = {
-          "action": "Set Speed",
-          "result": "Success"
-        }
-      }
-      else {
-        const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({'speed': speed})
-        };
-        const response = await fetch(this.props.url+'/api/v1/resources/walkingpad/speed', requestOptions);
-        data = await response.json();
-      }
-      console.log('Speed set: ' + JSON.stringify(data, null, 2));
-    }
+  async increase_speed() {
+    this.set_speed(this.props.speed + 0.5)
+  }
 
-    render() {
-        return (
-            <div>
-                <div>Speed: {this.props.speed} km/h</div>
-                <div>
-                    <Button variant="contained" color="primary" onClick={this.decrease_speed}>
-                        -
-                    </Button>
-                    <Button variant="contained" color="secondary" onClick={this.increase_speed}>
-                        +
-                    </Button>
-                </div>
-            </div>
-        );
+  async decrease_speed() {
+    if (this.props.speed >= 0.5) {
+      this.set_speed(this.props.speed - 0.5)
     }
+  }
+
+  async set_speed(speed) {
+    console.log("Setting speed to " + speed);
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 'speed': speed })
+    };
+    const response = await fetch(this.props.url + '/api/v1/resources/walkingpad/speed', requestOptions);
+    let data = await response.json();
+
+    console.log('Speed set: ' + JSON.stringify(data, null, 2));
+  }
+
+  render() {
+    return (
+      <div>
+        <div>Speed: {this.props.speed} km/h</div>
+        <div>
+          <Button variant="contained" color="primary" onClick={this.decrease_speed}>
+            -
+          </Button>
+          <Button variant="contained" color="secondary" onClick={this.increase_speed}>
+            +
+          </Button>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Speed;
