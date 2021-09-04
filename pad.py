@@ -133,5 +133,5 @@ class Treadmill:
 
     async def set_speed(self,speed):
         logger.info(f"Setting speed to {speed}")
-        await self.controller.change_speed(speed*10)
+        await self.controller.change_speed(int(speed*10.0))
         await asyncio.sleep(self.minimal_cmd_space)

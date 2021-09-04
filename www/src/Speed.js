@@ -41,7 +41,7 @@ class Speed extends React.Component {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({'speed': speed})
         };
-        const response = await fetch('http://'+this.props.ip+':8000/api/v1/resources/walkingpad/speed', requestOptions);
+        const response = await fetch(this.props.url+'/api/v1/resources/walkingpad/speed', requestOptions);
         data = await response.json();
       }
       console.log('Speed set: ' + JSON.stringify(data, null, 2));
@@ -52,7 +52,7 @@ class Speed extends React.Component {
             <div>
                 <div>Speed: {this.props.speed} km/h</div>
                 <div>
-                    <Button variant="contained" color="secondary" onClick={this.decrease_speed}>
+                    <Button variant="contained" color="primary" onClick={this.decrease_speed}>
                         -
                     </Button>
                     <Button variant="contained" color="secondary" onClick={this.increase_speed}>

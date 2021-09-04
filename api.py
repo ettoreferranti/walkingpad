@@ -3,7 +3,7 @@
 import logging
 from quart import Quart
 from quart import request
-from quart_cors import cors
+from quart_cors import cors, route_cors
 from quart import jsonify
 from pad import Treadmill
 
@@ -14,7 +14,6 @@ logger.setLevel(logging.INFO)
 
 app = Quart(__name__)
 app = cors(app, allow_origin="*")
-#app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["DEBUG"] = True
 
 name = "r1 pro"
@@ -30,7 +29,6 @@ async def get_walking_pad():
 
     if address is None:
         logger.info(f"Getting the walking pad address ({name})")
-        # address = await WalkingPad.get_address_by_name(name)
         address = await Treadmill.scan(name)
         if address is None:
             logger.warning(f"Device {name} not found")
@@ -178,12 +176,22 @@ async def stop_walking():
         })
 
 @app.route('/api/v1/resources/walkingpad/speed', methods=['POST'])
+@route_cors(
+    allow_headers=["content-type"],
+    allow_methods=["POST"],
+    allow_origin=["*"],
+)
 async def set_speed():
     global walkingPad
 
-    await request.get_data()
-    speed = request.json['speed']
-    #speed = 4
+    if not request.is_json:
+        return jsonify({
+            "action": "Set Speed",
+            "result": "Failure",
+            "reason": "Request is not JSON"
+        })
+    speed_json = await request.get_json()
+    speed = speed_json['speed']
     logger.info(f"Setting speed to {speed}")
 
     if walkingPad is not None:
@@ -215,5 +223,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # execute only if run as a script
     main()

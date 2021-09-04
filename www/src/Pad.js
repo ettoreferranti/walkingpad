@@ -22,7 +22,7 @@ class Pad extends React.Component {
       connected: false,
       running: false,
       simulation: false,
-      ip_api : "192.168.1.148",
+      api_url : "http://192.168.1.148:8000",
       cumulative: [
         {
           steps: 0,
@@ -75,7 +75,7 @@ class Pad extends React.Component {
         headers: { 'Content-Type': 'application/json' },
         body: {}
       };
-      const response = await fetch('http://'+this.state.ip_api+':8000/api/v1/resources/walkingpad/connect', requestOptions);
+      const response = await fetch(this.state.api_url+'/api/v1/resources/walkingpad/connect', requestOptions);
       data = await response.json();
     }
     if (data.result === "Success") {
@@ -103,7 +103,7 @@ class Pad extends React.Component {
         headers: { 'Content-Type': 'application/json' },
         body: {}
       };
-      const response = await fetch('http://'+this.state.ip_api+':8000/api/v1/resources/walkingpad/disconnect', requestOptions);
+      const response = await fetch(this.state.api_url+'/api/v1/resources/walkingpad/disconnect', requestOptions);
       data = await response.json();
     }
     if (data.result === "Success") {
@@ -129,7 +129,7 @@ class Pad extends React.Component {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         };
-        const response = await fetch('http://'+this.state.ip_api+':8000/api/v1/resources/walkingpad/status', requestOptions);
+        const response = await fetch(this.state.api_url+'/api/v1/resources/walkingpad/status', requestOptions);
         data = await response.json();
       }
       //console.log('Status: ' + JSON.stringify(data, null, 2));
@@ -151,11 +151,11 @@ class Pad extends React.Component {
             Disconnect
           </Button>
         </h2>
-        <h2><Mode mode={this.state.status.mode} simulation={this.state.simulation} ip={this.state.ip_api}/></h2>
+        <h2><Mode mode={this.state.status.mode} simulation={this.state.simulation} url={this.state.api_url}/></h2>
         <h2><StepsField steps={this.state.status.steps} /></h2>
         <h2><DistanceField distance={this.state.status.distance} /></h2>
         <h2><TimeField time={this.state.status.time} /></h2>
-        <h2><Speed speed={this.state.status.speed} simulation={this.state.simulation} ip={this.state.ip_api}/></h2>
+        <h2><Speed speed={this.state.status.speed} simulation={this.state.simulation} url={this.state.api_url}/></h2>
         <h2><TimeSeries data={this.state.cumulative} /></h2>
       </div>
     );
