@@ -1,0 +1,7 @@
+{
+    "simulation": true,
+    "address": {
+        "ip": "http://192.168.1.148",
+        "port": "8000"
+    }
+}

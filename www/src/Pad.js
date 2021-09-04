@@ -6,6 +6,7 @@ import DistanceField from './DistanceField';
 import TimeSeries from './TimeSeries';
 import Speed from './Speed';
 import Mode from './Mode';
+import configData from './config.json'
 
 class Pad extends React.Component {
 
@@ -22,7 +23,7 @@ class Pad extends React.Component {
       connected: false,
       running: false,
       simulation: false,
-      api_url : "http://192.168.1.148:8000",
+      api_url : "localhost:8000",
     };
 
     this.connect = this.connect.bind(this);
@@ -32,6 +33,8 @@ class Pad extends React.Component {
   }
 
   async componentDidMount() {
+    this.setState({ simulation: configData.simulation });
+    this.setState({ api_url: configData.address.ip + ':' + configData.address.port });
   }
 
   async componentWillUnmount() {
