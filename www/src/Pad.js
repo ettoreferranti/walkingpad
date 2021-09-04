@@ -23,28 +23,6 @@ class Pad extends React.Component {
       running: false,
       simulation: false,
       api_url : "http://192.168.1.148:8000",
-      cumulative: [
-        {
-          steps: 0,
-          distance: 0.1,
-          time: 0
-        },
-        {
-          steps: 2,
-          distance: 0.2,
-          time: 1
-        },
-        {
-          steps: 4,
-          distance: 0.3,
-          time: 2
-        },
-        {
-          steps: 6,
-          distance: 0.4,
-          time: 3
-        }
-      ]
     };
 
     this.connect = this.connect.bind(this);
@@ -132,11 +110,7 @@ class Pad extends React.Component {
         const response = await fetch(this.state.api_url+'/api/v1/resources/walkingpad/status', requestOptions);
         data = await response.json();
       }
-      //console.log('Status: ' + JSON.stringify(data, null, 2));
       this.setState({ status: data });
-      //let additional = this.state.cumulative;
-      //additional.push(data);
-      //this.setState({cumulative: additional});
     }
   }
 

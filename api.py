@@ -6,6 +6,8 @@ from quart import request
 from quart_cors import cors, route_cors
 from quart import jsonify
 from pad import Treadmill
+import yaml
+from pathlib import Path
 
 
 logging.basicConfig()
@@ -16,22 +18,21 @@ app = Quart(__name__)
 app = cors(app, allow_origin="*")
 app.config["DEBUG"] = True
 
-name = "r1 pro"
+settings = {'name': 'r1 pro'}
 
 address = None
 
 walkingPad = None
-
 
 async def get_walking_pad():
     global address
     global walkingPad
 
     if address is None:
-        logger.info(f"Getting the walking pad address ({name})")
-        address = await Treadmill.scan(name)
+        logger.info(f"Getting the walking pad address ({settings['name']})")
+        address = await Treadmill.scan(settings['name'])
         if address is None:
-            logger.warning(f"Device {name} not found")
+            logger.warning(f"Device {settings['name']} not found")
             walkingPad = None
     if walkingPad is None:
         walkingPad = Treadmill(address)
@@ -217,8 +218,22 @@ async def set_speed():
             "reason": "Disconnected"
         })
 
+def load_config():
+    global settings
+
+    path = 'api_settings.yaml'
+    settings_file = Path(path)
+    if settings_file.is_file():
+        with open(r'api_settings.yaml') as file:
+            settings = yaml.load(file, Loader=yaml.FullLoader)
+            logger.info(f"Settings loaded: {settings}")
+    else:
+        with open(path, 'w') as file:
+            yaml.dump(settings, file)
+
 
 def main():
+    load_config()
     app.run(host='0.0.0.0', port=8000)
 
 
