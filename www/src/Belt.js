@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import {Button,Typography} from '@material-ui/core';
 
 class Belt extends React.Component {
 
@@ -45,15 +45,13 @@ class Belt extends React.Component {
   render() {
     return (
       <div>
-        <div>Belt: {this.props.belt} </div>
-        <div>
-          <Button variant="contained" color="primary" onClick={this.start}>
-            Start
+          <Button color="primary" onClick={this.start}>
+            <Typography variant="h4">Start</Typography>
           </Button>
-          <Button variant="contained" color="secondary" onClick={this.stop}>
-            Stop
+          <div>Belt: {this.props.belt}</div>
+          <Button color="secondary" onClick={this.stop}>
+            <Typography variant="h4">Stop</Typography>
           </Button>
-        </div>
       </div>
     );
   }

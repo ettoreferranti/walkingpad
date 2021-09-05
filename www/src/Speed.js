@@ -1,5 +1,6 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import { Button, Typography } from '@material-ui/core';
+//import GaugeChart from 'react-gauge-chart';
 
 class Speed extends React.Component {
   constructor(props) {
@@ -42,13 +43,13 @@ class Speed extends React.Component {
   render() {
     return (
       <div>
-        <div>Speed: {this.props.speed} km/h</div>
         <div>
-          <Button variant="contained" color="primary" onClick={this.decrease_speed}>
-            -
+          <Button color="secondary" onClick={this.increase_speed}>
+            <Typography variant="h4">+</Typography>
           </Button>
-          <Button variant="contained" color="secondary" onClick={this.increase_speed}>
-            +
+          <div>Speed: {this.props.speed} km/h</div>
+          <Button color="primary" onClick={this.decrease_speed}>
+            <Typography variant="h4">-</Typography>
           </Button>
         </div>
       </div>
@@ -57,3 +58,12 @@ class Speed extends React.Component {
 }
 
 export default Speed;
+
+/*
+<GaugeChart
+            id="speed_gauge"
+            nrOfLevels={3}
+            percent={this.props.speed/6.0}
+            animate={false}
+          />
+          */

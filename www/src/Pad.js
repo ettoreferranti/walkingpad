@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import { Button, Grid, Typography,Paper } from '@material-ui/core';
 import TimeField from './TimeField';
 import StepsField from './StepsField';
 import DistanceField from './DistanceField';
@@ -76,13 +76,13 @@ class Pad extends React.Component {
 
   async get_status() {
     if (this.state.connected) {
-        const requestOptions = {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        };
-        const response = await fetch(this.state.api_url + '/api/v1/resources/walkingpad/status', requestOptions);
-        let data = await response.json();
-      
+      const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      };
+      const response = await fetch(this.state.api_url + '/api/v1/resources/walkingpad/status', requestOptions);
+      let data = await response.json();
+
       this.setState({ status: data });
     }
   }
@@ -90,21 +90,66 @@ class Pad extends React.Component {
   render() {
     return (
       <div>
-        <h2>
-          <Button variant="contained" color="primary" onClick={this.connect}>
-            Connect
-          </Button>
-          <Button variant="contained" color="secondary" onClick={this.disconnect}>
-            Disconnect
-          </Button>
-        </h2>
-        <h2><Mode belt={this.state.status.mode}/></h2>
-        <h2><Belt belt={this.state.status.belt} url={this.state.api_url} /></h2>
-        <h2><StepsField steps={this.state.status.steps} /></h2>
-        <h2><DistanceField distance={this.state.status.distance} /></h2>
-        <h2><TimeField time={this.state.status.time} /></h2>
-        <h2><Speed speed={this.state.status.speed} url={this.state.api_url} /></h2>
+        <Grid container spacing={2}>
+          <Grid item xs={6} align="center">
+            <Button color="primary" onClick={this.connect}>
+              <Typography variant="h3">Connect</Typography>
+              </Button>
+          </Grid>
+          <Grid item xs={6} align="center">
+            <Button color="secondary" onClick={this.disconnect}>
+            <Typography variant="h3">Disconnect</Typography>
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={4} align="center">
+            <Paper elevation={1}>
+          <Typography variant="h4">
+          <Mode mode={this.state.status.mode} />
+          </Typography>
+          </Paper>
+          </Grid>
+          <Grid item xs={4} align="center">
+          <Paper elevation={1}>
+          <Typography variant="h4">
+            <Belt belt={this.state.status.belt} url={this.state.api_url} />
+            </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={4} align="center">
+          <Paper elevation={1}>
+          <Typography variant="h4">
+            <Speed speed={this.state.status.speed} url={this.state.api_url} />
+            </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={4} align="center">
+          <Paper elevation={1}>
+          <Typography variant="h4">
+            <StepsField steps={this.state.status.steps} />
+            </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={4} align="center">
+          <Paper elevation={1}>
+          <Typography variant="h4">
+            <DistanceField distance={this.state.status.distance} />
+            </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={4} align="center">
+          <Paper elevation={1}>
+          <Typography variant="h4">
+            <TimeField time={this.state.status.time} />
+            </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
       </div>
+
     );
   }
 }
