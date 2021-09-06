@@ -71,13 +71,6 @@ class Treadmill:
         mode = stats.manual_mode
         belt_state = stats.belt_state
 
-        if (mode == WalkingPad.MODE_STANDBY):
-            mode = "standby"
-        elif (mode == WalkingPad.MODE_MANUAL):
-            mode = "manual"
-        elif (mode == WalkingPad.MODE_AUTOMAT):
-            mode = "auto"
-
         if (belt_state == 5):
             belt_state = "standby"
         elif (belt_state == 0):
@@ -114,4 +107,10 @@ class Treadmill:
     async def set_speed(self,speed):
         logger.info(f"Setting speed to {speed}")
         await self.controller.change_speed(int(speed*10.0))
+        await asyncio.sleep(self.minimal_cmd_space)
+
+    
+    async def switch_mode(self,mode):
+        logger.info(f"Setting mode to {mode}")
+        await self.controller.switch_mode(mode)
         await asyncio.sleep(self.minimal_cmd_space)

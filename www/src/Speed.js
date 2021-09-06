@@ -44,11 +44,11 @@ class Speed extends React.Component {
     return (
       <div>
         <div>
-          <Button color="secondary" onClick={this.increase_speed}>
+          <Button color="primary" onClick={this.increase_speed}>
             <Typography variant="h4">+</Typography>
           </Button>
           <div>Speed: {this.props.speed} km/h</div>
-          <Button color="primary" onClick={this.decrease_speed}>
+          <Button color="secondary" onClick={this.decrease_speed}>
             <Typography variant="h4">-</Typography>
           </Button>
         </div>

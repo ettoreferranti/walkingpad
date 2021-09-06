@@ -24,7 +24,7 @@ class FakeTreadmill:
             'distance': 0,
             'time': 0,
             'speed': 0,
-            'mode': 0,
+            'mode': 1,
             'belt_state': 0
         }
         self.update_thread = None
@@ -32,14 +32,9 @@ class FakeTreadmill:
 
     def update(self):
         while(self.status['belt_state'] == 'running'):
-            self.status = {
-                'steps': self.status['steps']+2,
-                'distance': self.status['distance']+0.01,
-                'time': self.status['time']+1,
-                'speed': self.status['speed'],
-                'mode': self.status['mode'],
-                'belt_state': self.status['belt_state']
-            }
+            self.status['steps'] = self.status['steps']+2
+            self.status['distance'] = self.status['distance']+0.1
+            self.status['time'] = self.status['time']+1
             time.sleep(1.0)
 
     @staticmethod
@@ -55,16 +50,7 @@ class FakeTreadmill:
     async def read_stats(self):
         logger.info(f"Reading status from {self.address}")
 
-        latest_status = {}
-
-        latest_status['steps'] = self.status['steps']
-        latest_status['distance'] = self.status['distance']
-        latest_status['time'] = self.status['time']
-        latest_status['speed'] = self.status['speed']
-        latest_status['mode'] = self.status['mode']
-        latest_status['belt_state'] = self.status['belt_state']
-
-        return latest_status
+        return self.status
 
     async def start_walking(self):
         logger.info("Starting to walk")
@@ -84,4 +70,9 @@ class FakeTreadmill:
     async def set_speed(self, speed):
         logger.info(f"Setting speed to {speed}")
         self.status['speed'] = speed
+        await asyncio.sleep(self.minimal_cmd_space)
+
+    async def switch_mode(self,mode):
+        logger.info(f"Setting mode to {mode}")
+        self.status['mode'] = mode
         await asyncio.sleep(self.minimal_cmd_space)

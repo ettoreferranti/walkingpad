@@ -184,6 +184,8 @@ async def stop_walking():
             "reason": "Disconnected"
         })
 
+
+
 @app.route('/api/v1/resources/walkingpad/speed', methods=['POST'])
 @route_cors(
     allow_headers=["content-type"],
@@ -212,7 +214,7 @@ async def set_speed():
                 "value" : speed,
             })
         except:
-            logger.exception("Stop walking error")
+            logger.exception("Set speed error")
         return jsonify({
             "action": "Set Speed",
             "result": "Failure",
@@ -222,6 +224,53 @@ async def set_speed():
         logger.warning("WalkingPad disconnected")
         return jsonify({
             "action": "Set Speed",
+            "result": "Failure",
+            "reason": "Disconnected"
+        })
+
+@app.route('/api/v1/resources/walkingpad/mode', methods=['POST'])
+@route_cors(
+    allow_headers=["content-type"],
+    allow_methods=["POST"],
+    allow_origin=["*"],
+)
+async def set_mode():
+    global walkingPad
+
+    if not request.is_json:
+        return jsonify({
+            "action": "Set Mode",
+            "result": "Failure",
+            "reason": "Request is not JSON"
+        })
+    mode_json = await request.get_json()
+    mode = mode_json['mode']
+    logger.info(f"Setting mode to {mode}")
+    if mode < 0 or mode > 2:
+        return jsonify({
+            "action": "Set Mode",
+            "result": "Failure",
+            "reason": f"Mode out of range ({mode})"
+        })
+    if walkingPad is not None:
+        try:
+            await walkingPad.switch_mode(mode)
+            return jsonify({
+                "action": "Set Mode",
+                "result": "Success",
+                "value" : mode,
+            })
+        except:
+            logger.exception("Mode changing error")
+        return jsonify({
+            "action": "Set Mode",
+            "result": "Failure",
+            "reason": "Exception"
+        })
+    else:
+        logger.warning("WalkingPad disconnected")
+        return jsonify({
+            "action": "Set Mode",
             "result": "Failure",
             "reason": "Disconnected"
         })

@@ -19,7 +19,7 @@ class Pad extends React.Component {
         time: 0,
         speed: 0,
         belt: 0,
-        mode: 0,
+        mode: 1,
       },
       connected: false,
       api_url: "localhost:8000",
@@ -106,7 +106,7 @@ class Pad extends React.Component {
           <Grid item xs={4} align="center">
             <Paper elevation={1}>
           <Typography variant="h4">
-          <Mode mode={this.state.status.mode} />
+          <Mode mode={this.state.status.mode} url={this.state.api_url}/>
           </Typography>
           </Paper>
           </Grid>
