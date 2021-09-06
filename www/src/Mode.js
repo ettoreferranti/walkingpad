@@ -6,7 +6,6 @@ class Mode extends React.Component {
     constructor(props) {
         super(props);
         this.mode = 'Unknown';
-        console.log("Current mode is " + props.mode);
         switch(props.mode) {
         case 0:
             this.mode = 'Auto';
