@@ -20,11 +20,11 @@ class FakeTreadmill:
         self.connected = False
         self.address = address
         self.status = {
-            'steps': 0,
-            'distance': 0,
-            'time': 0,
-            'speed': 0,
-            'mode': 1,
+            'steps': 0.0,
+            'distance': 0.0,
+            'time': 0.0,
+            'speed': 0.0,
+            'mode': 1.0,
             'belt_state': 'idle'
         }
         self.update_thread = None
@@ -32,9 +32,9 @@ class FakeTreadmill:
 
     def update(self):
         while(self.status['belt_state'] == 'running'):
-            self.status['steps'] = self.status['steps']+2
-            self.status['distance'] = self.status['distance']+0.1
-            self.status['time'] = self.status['time']+1
+            self.status['steps'] = self.status['steps']+2.0
+            self.status['distance'] = self.status['distance']+1.0
+            self.status['time'] = self.status['time']+1.0
             time.sleep(1.0)
 
     @staticmethod

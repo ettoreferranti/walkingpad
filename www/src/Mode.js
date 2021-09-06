@@ -62,12 +62,12 @@ class Mode extends React.Component {
     render() {
         return (
             <div>
-                <Button color="primary" onClick={this.plus}>
-                    <Typography variant="h4">+</Typography>
-                </Button>
-                <div>Mode: {this.mode}</div>
                 <Button color="secondary" onClick={this.minus}>
                     <Typography variant="h4">-</Typography>
+                </Button>
+                Mode: {this.mode}
+                <Button color="primary" onClick={this.plus}>
+                    <Typography variant="h4">+</Typography>
                 </Button>
             </div>
         );
