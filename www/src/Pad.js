@@ -6,11 +6,7 @@ import DistanceField from './DistanceField';
 import Speed from './Speed';
 import Belt from './Belt';
 import Mode from './Mode';
-import configData from './config.json'
-
-const styles = {
-  paper: { elevation: 5, borderColor: "#FFF", padding: 20 },
-};
+import configData from './config.json';
 
 class Pad extends React.Component {
 
@@ -96,14 +92,14 @@ class Pad extends React.Component {
       <div>
         <Grid container spacing={2}>
           <Grid item xs={6} align="center">
-            <Paper className="classes.paper">
-              <Button color="primary" onClick={this.connect}>
+            <Paper className="paper">
+              <Button className="button" color="primary" onClick={this.connect}>
                 <Typography variant="h3">Connect</Typography>
               </Button>
             </Paper>
           </Grid>
           <Grid item xs={6} align="center">
-            <Paper className="classes.paper">
+            <Paper className="paper">
               <Button color="secondary" onClick={this.disconnect}>
                 <Typography variant="h3">Disconnect</Typography>
               </Button>
@@ -112,21 +108,21 @@ class Pad extends React.Component {
         </Grid>
         <Grid container spacing={2}>
           <Grid item xs={4} align="center">
-            <Paper className="classes.paper">
+            <Paper className="paper">
               <Typography variant="h4">
                 <StepsField steps={this.state.status.steps} maxsteps={configData.maxsteps} />
               </Typography>
             </Paper>
           </Grid>
           <Grid item xs={4} align="center">
-            <Paper className="classes.paper">
+            <Paper className="paper">
               <Typography variant="h4">
                 <Belt belt={this.state.status.belt} url={this.state.api_url} />
               </Typography>
             </Paper>
           </Grid>
           <Grid item xs={4} align="center">
-            <Paper className="classes.paper">
+            <Paper className="paper">
               <Typography variant="h4">
                 <Speed speed={this.state.status.speed} url={this.state.api_url} />
               </Typography>
@@ -135,14 +131,14 @@ class Pad extends React.Component {
         </Grid>
         <Grid container spacing={2}>
           <Grid item xs={6} align="center">
-            <Paper className="classes.paper">
+            <Paper className="paper">
               <Typography variant="h4">
                 <DistanceField distance={this.state.status.distance} />
               </Typography>
             </Paper>
           </Grid>
           <Grid item xs={6} align="center">
-            <Paper className="classes.paper">
+            <Paper className="paper">
               <Typography variant="h4">
                 <TimeField time={this.state.status.time} />
               </Typography>
@@ -151,7 +147,7 @@ class Pad extends React.Component {
         </Grid>
         <Grid container spacing={2}>
           <Grid item xs={12} align="center">
-            <Paper className="classes.paper">
+            <Paper className="paper">
               <Typography variant="h4">
                 <Mode mode={this.state.status.mode} url={this.state.api_url} />
               </Typography>
