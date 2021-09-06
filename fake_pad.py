@@ -25,7 +25,7 @@ class FakeTreadmill:
             'time': 0,
             'speed': 0,
             'mode': 1,
-            'belt_state': 0
+            'belt_state': 'idle'
         }
         self.update_thread = None
         

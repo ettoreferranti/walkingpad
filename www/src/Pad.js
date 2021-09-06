@@ -8,7 +8,7 @@ import Belt from './Belt';
 import Mode from './Mode';
 import configData from './config.json'
 
-class Pad extends React.Component {
+class Pad extends React.Component { 
 
   constructor(props) {
     super(props);
