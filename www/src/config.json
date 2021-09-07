@@ -1,5 +1,5 @@
 {
-    "simulation": true,
+    "simulation": false,
     "maxsteps": 10000,
     "address": {
         "ip": "http://192.168.1.148",

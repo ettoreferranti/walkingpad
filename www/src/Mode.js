@@ -1,27 +1,31 @@
 import React from 'react';
-import { Button, Typography } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 
 class Mode extends React.Component {
 
     constructor(props) {
         super(props);
         this.mode = 'Unknown';
-        switch(props.mode) {
-        case 0:
-            this.mode = 'Auto';
-            break;
-        case 1:
-            this.mode = 'Manual';
-            break;
-        case 2:
-            this.mode = 'Standby';
-            break;
-        default:
-            this.mode = 'Unknown';
-            break;
+        switch (props.mode) {
+            case 0:
+                this.mode = 'Auto';
+                break;
+            case 1:
+                this.mode = 'Manual';
+                break;
+            case 2:
+                this.mode = 'Standby';
+                break;
+            default:
+                this.mode = 'Unknown';
+                break;
         }
-        this.plus = this.plus.bind(this);
-        this.minus = this.minus.bind(this);
+        this.buttonS = this.mode === 'Standby' ? "secondary" : "primary";
+        this.buttonM = this.mode === 'Manual' ? "secondary" : "primary";
+        this.buttonA = this.mode === 'Auto' ? "secondary" : "primary";
+        this.standby = this.standby.bind(this);
+        this.manual = this.manual.bind(this);
+        this.auto = this.auto.bind(this);
         this.set_mode = this.set_mode.bind(this);
     }
 
@@ -31,20 +35,16 @@ class Mode extends React.Component {
     async componentWillUnmount() {
     }
 
-    async plus() {
-        let newMode = this.props.mode + 1;
-        if (newMode > 2) {
-            newMode = 0;
-        }
-        this.set_mode(newMode)
+    async standby() {
+        this.set_mode(0)
     }
 
-    async minus() {
-        let newMode = this.props.mode - 1;
-        if (newMode < 0) {
-            newMode = 2;
-        }
-        this.set_mode(newMode)
+    async manual() {
+        this.set_mode(1)
+    }
+
+    async auto() {
+        this.set_mode(2)
     }
 
     async set_mode(newMode) {
@@ -59,16 +59,20 @@ class Mode extends React.Component {
         console.log('Mode setting: ' + JSON.stringify(data, null, 2));
     }
 
+
+
     render() {
         return (
             <div>
-                <Button color="secondary" onClick={this.minus}>
-                    <Typography variant="h4">-</Typography>
-                </Button>
-                Mode: {this.mode}
-                <Button color="primary" onClick={this.plus}>
-                    <Typography variant="h4">+</Typography>
-                </Button>
+                <IconButton color={this.buttonS} onClick={this.standby}>
+                    <Typography variant="h2">S</Typography>
+                </IconButton>
+                <IconButton color={this.buttonM} onClick={this.manual}>
+                    <Typography variant="h2">M</Typography>
+                </IconButton>
+                <IconButton color={this.buttonA} onClick={this.auto}>
+                    <Typography variant="h2">A</Typography>
+                </IconButton>
             </div>
         );
     }

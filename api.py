@@ -19,15 +19,13 @@ app = Quart(__name__)
 app = cors(app, allow_origin="*")
 app.config["DEBUG"] = True
 
-settings = {'name': 'r1 pro', 'simulation': False}
-
-address = None
+settings = {'name': 'r1 pro', 'simulation': False, 'address': None}
 
 walkingPad = None
 
 async def get_walking_pad():
-    global address
     global walkingPad
+    global settings
 
     if walkingPad is not None:
         return
@@ -35,15 +33,14 @@ async def get_walking_pad():
     if settings['simulation']:
         walkingPad = FakeTreadmill(await FakeTreadmill.scan(settings['name']))
     else:
-        if address is None:
+        if settings['address'] is None:
             logger.info(f"Getting the walking pad address ({settings['name']})")
-            address = await Treadmill.scan(settings['name'])
-            if address is None:
+            settings['address'] = await Treadmill.scan(settings['name'])
+            if settings['address'] is None:
                 logger.warning(f"Device {settings['name']} not found")
                 walkingPad = None
-                address = None
-            else:
-                walkingPad = Treadmill(address)
+                return
+        walkingPad = Treadmill(settings['address'])
 
 
 @app.route('/', methods=['GET'])
