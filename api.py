@@ -19,7 +19,9 @@ app = Quart(__name__)
 app = cors(app, allow_origin="*")
 app.config["DEBUG"] = True
 
-settings = {'name': 'r1 pro', 'simulation': False, 'address': None}
+settings = {'name': 'r1 pro', 'simulation': False}
+
+path = 'api_settings.yaml'
 
 walkingPad = None
 
@@ -27,20 +29,28 @@ async def get_walking_pad():
     global walkingPad
     global settings
 
+    address = None
+
     if walkingPad is not None:
         return
 
+    if settings is None or 'simulation' not in settings or 'name' not in settings:
+        write_config()
+        load_config()
+    
     if settings['simulation']:
         walkingPad = FakeTreadmill(await FakeTreadmill.scan(settings['name']))
     else:
-        if settings['address'] is None:
+        if address is None:
             logger.info(f"Getting the walking pad address ({settings['name']})")
-            settings['address'] = await Treadmill.scan(settings['name'])
-            if settings['address'] is None:
+            address = await Treadmill.scan(settings['name'])
+            if address is None:
                 logger.warning(f"Device {settings['name']} not found")
                 walkingPad = None
                 return
-        walkingPad = Treadmill(settings['address'])
+            else:
+                write_config()
+        walkingPad = Treadmill(address)
 
 
 @app.route('/', methods=['GET'])
@@ -272,18 +282,24 @@ async def set_mode():
             "reason": "Disconnected"
         })
 
+def write_config():
+    global settings
+    global path
+
+    with open(path, 'w') as file:
+        yaml.dump(settings, file)
+
 def load_config():
     global settings
+    global path
 
-    path = 'api_settings.yaml'
     settings_file = Path(path)
     if settings_file.is_file():
         with open(r'api_settings.yaml') as file:
             settings = yaml.load(file, Loader=yaml.FullLoader)
             logger.info(f"Settings loaded: {settings}")
     else:
-        with open(path, 'w') as file:
-            yaml.dump(settings, file)
+        write_config()
 
 
 def main():

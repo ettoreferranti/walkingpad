@@ -36,7 +36,7 @@ class Mode extends React.Component {
     }
 
     async standby() {
-        this.set_mode(0)
+        this.set_mode(2)
     }
 
     async manual() {
@@ -44,7 +44,7 @@ class Mode extends React.Component {
     }
 
     async auto() {
-        this.set_mode(2)
+        this.set_mode(0)
     }
 
     async set_mode(newMode) {
